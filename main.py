@@ -36,6 +36,9 @@ def make_folder(directory):
     if not os.path.exists(directory):
         os.makedirs(directory)
 
+def count_num_of_images(full_path):
+    return len(os.listdir(full_path))
+
 
 class SetupWindow(QWidget):
     def __init__(self):
@@ -535,7 +538,10 @@ class LabelerWindow(QWidget):
 
             self.set_image(path)
             self.img_name_label.setText(path)
-            self.progress_bar.setText(f'image {self.counter + 1} of {self.num_images}')
+            temp = ''
+            for label in self.labels:
+                temp += f' | Folder {label}: {count_num_of_images(os.path.join(self.input_folder, label))}'
+            self.progress_bar.setText(f'Image {self.counter + 1} of {self.num_images}' + temp)
             self.set_button_color(filename)
             self.csv_generated_message.setText('')
 
@@ -549,6 +555,8 @@ class LabelerWindow(QWidget):
         """
         loads and shows previous image in dataset
         """
+        print(self.labels)
+        print(self.input_folder)
         if self.counter > 0:
             self.counter -= 1
 
@@ -563,7 +571,11 @@ class LabelerWindow(QWidget):
 
                 self.set_image(path)
                 self.img_name_label.setText(path)
-                self.progress_bar.setText(f'image {self.counter + 1} of {self.num_images}')
+                # Check num of images in each folder classes
+                temp = ''
+                for label in self.labels:
+                    temp += f' | Folder {label}: {count_num_of_images(os.path.join(self.input_folder, label))}'
+                self.progress_bar.setText(f'Image {self.counter + 1} of {self.num_images}' + temp)
 
                 self.set_button_color(filename)
                 self.csv_generated_message.setText('')
